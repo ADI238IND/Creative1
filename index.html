@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated File Converter and Compressor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>Automated File Converter & Compressor</span>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statFiles">0</div>
+                        <div class="stat-label">Files Processed</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statTime">0s</div>
+                        <div class="stat-label">Processing Time</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statSaved">0 MB</div>
+                        <div class="stat-label">Space Saved</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Features Overview -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <div class="feature-title">Lightning Fast</div>
+                <div class="feature-desc">Process 20 files simultaneously</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">100% Secure</div>
+                <div class="feature-desc">Client-side processing only</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Smart Resize</div>
+                <div class="feature-desc">Auto-detect optimal dimensions</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">50+ Presets</div>
+                <div class="feature-desc">Pre-configured for popular sites</div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Left Column: Upload & Settings -->
+            <div>
+                <!-- Upload Zone -->
+                <div class="upload-section" id="uploadZone">
+                    <span class="upload-icon">📁</span>
+                    <h2>Drop Files Here</h2>
+                    <p>or click to select (Max 20 files, up to 500MB each)</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                        📂 Browse Files
+                    </button>
+                    <input type="file" id="fileInput" multiple class="file-input" accept="*/*">
+                </div>
+
+                <!-- Website Presets -->
+                <div class="presets-section">
+                    <div class="presets-header">
+                        <span>🌐</span>
+                        <h3>Website Presets (50+)</h3>
+                    </div>
+                    <input type="text" id="searchPresets" class="search-input" placeholder="Search presets...">
+                    <div class="presets-grid" id="presetsGrid"></div>
+                </div>
+
+                <!-- Settings Panel -->
+                <div class="settings-panel">
+                    <div class="settings-header">
+                        <span>⚙️</span>
+                        <h3>Processing Settings</h3>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="setting-label">Compression Quality</label>
+                        <div class="slider-container">
+                            <input type="range" id="quality" min="10" max="100" value="80" class="slider">
+                            <span class="setting-value" id="qualityValue">80%</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="setting-label">Max File Size</label>
+                        <div class="slider-container">
+                            <input type="range" id="maxSize" min="100" max="500" value="500" step="50" class="slider">
+                            <span class="setting-value" id="maxSizeValue">500 MB</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label class="setting-label">Image Resize Mode</label>
+                        <select id="resizeMode" class="search-input">
+                            <option value="fit">Fit to Preset</option>
+                            <option value="fill">Fill to Preset</option>
+                            <option value="custom">Custom Dimensions</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group" id="customDimGroup" style="display: none;">
+                        <label class="setting-label">Width × Height (pixels)</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" id="customWidth" class="search-input" placeholder="Width" value="1024" style="flex: 1;">
+                            <input type="number" id="customHeight" class="search-input" placeholder="Height" value="768" style="flex: 1;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary btn-lg" id="convertBtn" disabled onclick="processFiles()">
+                        ⚡ Convert All Files
+                    </button>
+                    <button class="btn btn-secondary btn-lg" onclick="clearAll()">
+                        🗑️ Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Files & Downloads -->
+            <div>
+                <!-- Files List -->
+                <div class="files-section">
+                    <div class="files-header">
+                        <h3>Uploaded Files</h3>
+                        <span class="file-count" id="fileCount">0</span>
+                    </div>
+                    <div id="filesList" class="files-list">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <h3>No files yet</h3>
+                            <p>Upload files to get started</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Download Section -->
+                <div class="download-section" id="downloadSection" style="display: none;">
+                    <h3>✅ Ready to Download</h3>
+                    <div class="download-grid" id="downloadGrid"></div>
+                    <div style="margin-top: 16px;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="downloadAll()">
+                            ⬇️ Download All (ZIP)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>🔒 All processing happens locally in your browser • No data is uploaded to servers • Powered by Web APIs</p>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Processing Modal -->
+    <div class="modal" id="processingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Processing Files</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div style="text-align: center; padding: 40px 20px;">
+                <div class="spinner" style="margin: 0 auto 20px; width: 32px; height: 32px;"></div>
+                <p id="processingText">Initializing conversion...</p>
+                <div style="margin-top: 20px; background: var(--bg); padding: 16px; border-radius: 8px;">
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        <p id="processingProgress">0 of 0 files</p>
+                        <div style="margin-top: 8px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;">
+                            <div id="processingBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #2563eb 0%, #06b6d4 100%); border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript File -->
+    <script src="script.js"></script>
+</body>
+</html>
